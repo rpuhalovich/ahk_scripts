@@ -8,8 +8,8 @@
 SetTitleMatchMode, 2
 
 ; Windows-----------------------------------------------------------------------
-Home::Reload
-End::ExitApp
+PgUp::Reload
+PgDn::ExitApp
 
 ;; allows snap with mouse
 ;^F24::Send #{Right}
@@ -19,6 +19,28 @@ End::ExitApp
 !x::WinMinimize, A ; minimises active window
 
 #Escape::DllCall("PowrProf\SetSuspendState", "int", 0, "int", 0, "int", 0)
+
+activate_explorer() {
+	Run, Explorer
+	Sleep 700
+	send, #{right}
+	return
+}
+
+F24::activate_explorer()
+#e::activate_explorer()
+
+; middle click to open in new explorer window
+MouseIsOver(WinTitle) {
+    MouseGetPos,,, Win
+    return WinExist(WinTitle . " ahk_id " . Win)
+}
+#If MouseIsOver("ahk_class CabinetWClass")
+MButton::
+    Send {LButton}{AppsKey}e
+	Sleep 2000
+	Send #{right}
+    return
 
 ; Ableton Live------------------------------------------------------------------
 #IfWinActive, ahk_class Ableton Live Window Class
@@ -87,26 +109,6 @@ F2::!Home
 
 ; Visual Studio Code------------------------------------------------------------
 #IfWinActive, ahk_exe Code.exe
-;enable solarized dark
-F1::
-{
-	Send, ^k
-	Send, ^t
-	Send, light
-	Send, {Enter}
-	return
-}
-
-;enable solarized light
-F2::
-{
-	Send, ^k
-	Send, ^t
-	Send, solarized dark
-	Send, {Enter}
-	return
-}
-
 ;fold all (level 1)
 F3::
 {
@@ -138,19 +140,16 @@ F4::
 	return
 }
 
-;renames files
-^r::F2
-
 ^p::send, _data1.csv _output.txt < _inputs1.txt
 
 ; Visual Studio-----------------------------------------------------------------
-#IfWinActive, ahk_exe devenv.exe
-;creates a 120 char long string for making guideline
-F12::
-{
-	Send //---------------------------------------------------------------------------------------------------------------------
-	return
-}
+;#IfWinActive, ahk_exe devenv.exe
+;;creates a 120 char long string for making guideline
+;F12::
+;{
+;	Send //---------------------------------------------------------------------------------------------------------------------
+;	return
+;}
 
 ; Codelite----------------------------------------------------------------------
 #IfWinActive, ahk_exe codelite.exe
@@ -252,3 +251,12 @@ F1::
 	Send ^!x
 	return
 }
+
+; Cyberpunk---------------------------------------------------------------------
+;#IfWinActive, ahk_exe Cyberpunk2077.exe
+;F1::send i
+;F2::send o
+
+; The Witcher 3-----------------------------------------------------------------
+#IfWinActive, ahk_exe witcher3.exe
+F1::Send, {Enter}
